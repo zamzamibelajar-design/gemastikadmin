@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartGrowth - Peta Penyebaran</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f5f5f5;
+      display: flex;
+      min-height: 100vh;
+      color: #333;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: white;
+      border-right: 1px solid #eee;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .logo-section {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #29abe2, #5fd3b3);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .logo-text {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .nav-item {
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #666;
+      font-size: 14px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      background: #e3f2fd;
+      color: #29abe2;
+      border-left: 4px solid #29abe2;
+    }
+
+    .nav-item i {
+      font-size: 18px;
+    }
+
+    .logout {
+      margin-top: auto;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #666;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .logout:hover {
+      color: #dc3545;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      background: #f8fafc;
+      overflow-y: auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: white;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 20px;
+    }
+
+    .search-bar {
+      flex: 1;
+      max-width: 500px;
+      padding: 8px 15px;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-icon {
+      font-size: 16px;
+      color: #666;
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .header-icons {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .icon-btn {
+      font-size: 18px;
+      color: #666;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: #dc3545;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #333;
+      cursor: pointer;
+    }
+
+    /* Title Card */
+    .title-card {
+      background: linear-gradient(135deg, #29abe2, #5fd3b3);
+      color: white;
+      padding: 15px 20px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .title-text {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    /* Date Filter */
+    .date-filter {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+
+    .date-btn {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      padding: 8px 15px;
+      font-size: 14px;
+      color: #333;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .date-btn i {
+      font-size: 16px;
+    }
+
+    /* Map Section */
+    .map-container {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: relative;
+    }
+
+    .indonesia-map {
+      width: 100%;
+      height: 400px;
+      background: url('https://via.placeholder.com/800x400?text=Peta+Indonesia') no-repeat center center;
+      background-size: contain;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+    }
+
+    /* Provinsi Warna */
+    .provinsi {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    /* Pin Lokasi */
+    .pin {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #dc3545;
+      border-radius: 50%;
+      border: 2px solid white;
+      cursor: pointer;
+      z-index: 10;
+      animation: pulse 1.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+      transform: translate(-50%, -50%);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .pin:hover {
+      transform: translate(-50%, -50%) scale(1.5);
+      box-shadow: 0 0 12px rgba(220, 53, 69, 0.6);
+    }
+
+    .pin.medium {
+      background: #29abe2;
+    }
+
+    .pin.low {
+      background: #5fd3b3;
+    }
+
+    .pin.large {
+      width: 20px;
+      height: 20px;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+      100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    /* Legend */
+    .legend {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #333;
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 60px;
+        padding: 20px 0;
+      }
+      .logo-text {
+        display: none;
+      }
+      .nav-item span {
+        display: none;
+      }
+      .main-content {
+        padding: 10px;
+      }
+      .title-card {
+        padding: 10px 15px;
+      }
+      .indonesia-map {
+        height: 300px;
+      }
+    }
+    .peta {
+        height: 110%;
+        width: 120%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo-section">
+      <img class="logo" src="image/LogoSmartGrowth.png" alt="">
+      <div class="logo-text">SmartGrowth</div>
+    </div>
+
+    <a href="dashboardAdmin.html" class="nav-item">
+      <i>🏠</i> Dashboard
+    </a>
+
+    <a href="HalamanPetaAdmin.html" class="nav-item active">
+      <i>🗺️</i> Peta Penyebaran
+    </a>
+
+    <a href="#" class="nav-item">
+      <i>👥</i> Manajemen Pengguna
+    </a>
+
+    <a href="#" class="nav-item">
+      <i>⚙️</i> Settings
+    </a>
+
+    <a href="#" class="logout">
+      <i>👤</i> Log out
+    </a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Header -->
+    <div class="header">
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" placeholder="Search any keywords" />
+      </div>
+      <div class="header-icons">
+        <div class="icon-btn">✉️<span class="badge">2</span></div>
+        <div class="icon-btn">🔔</div>
+        <div class="avatar">👤</div>
+      </div>
+    </div>
+
+    <!-- Title Card -->
+    <div class="title-card">
+      <div class="title-text">Peta Penyebaran Stunting Di Indonesia</div>
+    </div>
+
+    <!-- Date Filter -->
+    <div class="date-filter">
+      <div class="date-btn">
+        <i>📅</i> Start Date
+      </div>
+      <span>-</span>
+      <div class="date-btn">
+        <i>📅</i> End Date
+      </div>
+    </div>
+
+    <!-- Map Container -->
+    <div class="map-container">
+      <div class="indonesia-map">
+        <!-- Mock Pin Locations -->
+         <img class="peta" src="image/petaAdmin.png" alt="">
+        <div class="pin large" style="top: 40%; left: 30%;"></div>
+        <div class="pin medium" style="top: 50%; left: 45%;"></div>
+        <div class="pin low" style="top: 60%; left: 60%;"></div>
+        <div class="pin" style="top: 30%; left: 70%;"></div>
+        <div class="pin medium" style="top: 45%; left: 80%;"></div>
+        <div class="pin low" style="top: 55%; left: 25%;"></div>
+        <div class="pin" style="top: 35%; left: 55%;"></div>
+        <div class="pin medium" style="top: 65%; left: 75%;"></div>
+        <div class="pin low" style="top: 25%; left: 40%;"></div>
+        <div class="pin" style="top: 70%; left: 35%;"></div>
+        <div class="pin medium" style="top: 50%; left: 70%;"></div>
+        <div class="pin low" style="top: 40%; left: 85%;"></div>
+        <div class="pin" style="top: 60%; left: 50%;"></div>
+        <div class="pin medium" style="top: 30%; left: 65%;"></div>
+        <div class="pin low" style="top: 55%; left: 30%;"></div>
+        <div class="pin" style="top: 45%; left: 75%;"></div>
+        <div class="pin medium" style="top: 65%; left: 40%;"></div>
+        <div class="pin low" style="top: 25%; left: 55%;"></div>
+        <div class="pin" style="top: 75%; left: 65%;"></div>
+        <div class="pin medium" style="top: 35%; left: 80%;"></div>
+      </div>
+
+      <!-- Legend -->
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-color" style="background:#5fd3b3;"></div>
+          <span>Resiko Rendah</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background:#29abe2;"></div>
+          <span>Medium</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background:#dc3545;"></div>
+          <span>Beresiko Tinggi</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
